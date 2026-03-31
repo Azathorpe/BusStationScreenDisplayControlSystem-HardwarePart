@@ -28,3 +28,5 @@
 .\objects\main.o: .\Libs\stm32f10x_usart.h
 .\objects\main.o: .\Libs\stm32f10x_wwdg.h
 .\objects\main.o: .\Libs\misc.h
+.\objects\main.o: .\User\Hard\Serial.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
