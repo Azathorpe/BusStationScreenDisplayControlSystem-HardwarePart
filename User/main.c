@@ -1,6 +1,10 @@
-#include "stm32f10x.h"                  // Device header
+#include "stm32f10x.h"
+#include "Serial.h"
 
-int main(void){
+int main(){
+	
+	Serial_Init();
+	Serial_SendString("你好 我的爱人");
 	while(1){
 		
 	}
