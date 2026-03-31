@@ -680,6 +680,21 @@
               <FileType>5</FileType>
               <FilePath>.\User\Hard\Serial.h</FilePath>
             </File>
+            <File>
+              <FileName>OLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Hard\OLED.c</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Hard\OLED.h</FilePath>
+            </File>
+            <File>
+              <FileName>OLED_Font.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Hard\OLED_Font.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
