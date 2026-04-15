@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Start;.\Libs;.\User;.\User\Hard</IncludePath>
+              <IncludePath>.\Start;.\Libs;.\User;.\User\Hard;.\User\Soft</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -694,6 +694,16 @@
               <FileName>OLED_Font.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\Hard\OLED_Font.h</FilePath>
+            </File>
+            <File>
+              <FileName>Delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Soft\Delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>Delay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Soft\Delay.h</FilePath>
             </File>
           </Files>
         </Group>

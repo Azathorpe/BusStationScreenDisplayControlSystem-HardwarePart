@@ -5,6 +5,10 @@
 #define OLED_W_SCL(x)		GPIO_WriteBit(GPIOB, GPIO_Pin_8, (BitAction)(x))
 #define OLED_W_SDA(x)		GPIO_WriteBit(GPIOB, GPIO_Pin_9, (BitAction)(x))
 
+static uint8_t OLED_Buffer[8][128]; // 显存缓冲区，8页，每页128列
+//static uint8_t current_page = 0;    // 当前页
+//static uint8_t current_col = 0;     // 当前列
+
 /*引脚初始化*/
 void OLED_I2C_Init(void)
 {
@@ -319,3 +323,88 @@ void OLED_Init(void)
 		
 	OLED_Clear();				//OLED清屏
 }
+
+
+/**
+ * @brief       OLED显示汉字（支持正反显示）
+ * @param       Line   : 行位置，1~4（每行对应16像素高度）
+ * @param       Column : 列位置，1~8（每列对应16像素宽度）
+ * @param       Num    : 字库中的汉字索引（0,1,...）
+ * @param       mode   : 显示模式，1-正常显示，0-反向显示
+ * @retval      无
+ */
+void OLED_ShowCN(uint8_t Line, uint8_t Column, uint8_t Num, uint8_t mode)  
+{      
+    uint8_t i;
+    uint8_t page_start = (Line - 1) * 2;   // 计算起始页（汉字占2页）
+    uint8_t col_start = (Column - 1) * 16; // 计算起始列（汉字占16列）
+
+    // 显示上半部分（前16字节）
+    OLED_SetCursor(page_start, col_start);
+    for (i = 0; i < 16; i++) 
+    {
+        uint8_t data = OLED_F10x16[Num][i];
+        OLED_WriteData(mode ? data : ~data); // 根据mode取反
+    }
+
+    // 显示下半部分（后16字节）
+    OLED_SetCursor(page_start + 1, col_start);
+    for (i = 16; i < 32; i++) 
+    {
+        uint8_t data = OLED_F10x16[Num][i];
+        OLED_WriteData(mode ? data : ~data); // 根据mode取反
+    }
+}
+
+/**
+  * @brief  OLED画点函数
+  * @param  x 横坐标，0~127
+  * @param  y 纵坐标，0~63
+  * @param  mode: 1 点亮像素，0 熄灭像素
+  * @retval 无
+  */
+void OLED_DrawPoint(uint8_t x, uint8_t y, uint8_t mode)
+{
+    if (x >= 128 || y >= 64) return; // 坐标越界处理
+    
+    uint8_t page = y / 8;      // 计算页地址
+    uint8_t bit_pos = y % 8;   // 计算页内位位置
+    
+    // 修改缓冲区对应位
+    if (mode) {
+        OLED_Buffer[page][x] |= (1 << bit_pos);  // 点亮像素
+    } else {
+        OLED_Buffer[page][x] &= ~(1 << bit_pos); // 熄灭像素
+    }
+    
+    // 更新到OLED屏幕
+    OLED_SetCursor(page, x);
+    OLED_WriteData(OLED_Buffer[page][x]);
+}
+
+/**
+  * @brief  OLED显示位图（支持任意位置和尺寸）
+  * @param  x     起始列 (0~127)
+  * @param  y     起始页 (0~7)
+  * @param  width 图像宽度（像素，必须为8的倍数）
+  * @param  height 图像高度（像素，必须为8的倍数）
+  * @param  bmp   位图数据数组，大小为 (width/8)*height 字节
+  * @retval 无
+  */
+void OLED_ShowBMP(uint8_t x, uint8_t y, uint8_t width, uint8_t height, const uint8_t *bmp, uint8_t mode) 
+{
+    uint8_t page_end = y + height / 8;
+    uint8_t col_end = x + width;
+    uint16_t index = 0;
+    
+    for (uint8_t page = y; page < page_end; page++) 
+    {
+        OLED_SetCursor(page, x);
+        for (uint8_t col = x; col < col_end; col++) 
+        {
+            uint8_t data = bmp[index++];
+            OLED_WriteData(mode ? data : ~data); // 根据mode取反
+        }
+    }
+}
+
